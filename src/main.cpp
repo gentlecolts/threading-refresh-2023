@@ -95,6 +95,10 @@ public:
 		printf("pool scaled down\n");
 	}
 	
+	int threadCount(){
+		return threads.size();
+	}
+	
 	void setPoolSize(const size_t thread_count=thread::hardware_concurrency()){
 		unique_lock<mutex> lock(thread_data->job_lock);
 		
@@ -197,13 +201,15 @@ int main(int argc,char** argv){
 	
 	WorkerPool pool;
 	
-	const int n=10;
+	const int n=1000;
 	vector<int> v(n);
 	iota(v.begin(),v.end(),0);
 	
 	auto start=&v[0];
 	function<void(int*)> task=waitAndPrint;
+	cout<<"mapping with "<<n<<" jobs in pool with "<<pool.threadCount()<<" threads"<<endl;
 	pool.map(start+0,start+n,task);
+	cout<<"map done"<<endl;
 	
 	return 0;
 }
